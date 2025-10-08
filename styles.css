@@ -1,0 +1,412 @@
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: #6b6b6b;
+  --accent: #C9A635; /* gold */
+  --sidebar: #fafafa;
+  --card: #ffffff;
+  --border: #e8e8e8;
+  --shadow: 0 6px 18px rgba(16, 16, 16, 0.06);
+  --radius: 10px;
+  --maxw: 1100px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 260px;
+  background: var(--sidebar);
+  padding: 28px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.site-title {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.nav {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: var(--text);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.nav-item:hover {
+  background: #f3f3f3;
+}
+
+.nav-item.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.sidebar-foot {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 24px;
+}
+
+.main {
+  flex: 1;
+  padding: 40px;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 26px;
+}
+
+.header.small {
+  margin-bottom: 18px;
+}
+
+.header h1, .header h2 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.header p, .header .lead {
+  color: var(--muted);
+  margin-top: 8px;
+  max-width: 700px;
+}
+
+.cta-row {
+  margin-top: 18px;
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  background: var(--accent);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 700;
+  display: inline-block;
+  transition: 0.25s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #b68d27;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+}
+
+.btn-outline:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.features {
+  display: flex;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.card {
+  background: var(--card);
+  padding: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
+  flex: 1;
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+}
+
+.features .card h3 {
+  margin: 0 0 8px 0;
+}
+
+.how {
+  margin-top: 22px;
+}
+
+.main-foot {
+  margin-top: 28px;
+  color: var(--muted);
+}
+
+.form-section {
+  max-width: 760px;
+}
+
+/* Updated for nested inputs in labels (as in submit.html) */
+.form-section label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+  font-weight: 600;
+  color: var(--text); /* Bold label text */
+}
+
+.form-section label input,
+.form-section label textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-top: 6px;
+  font-family: inherit;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  align-items: center;
+}
+
+.msg {
+  margin-top: 12px;
+  color: green;
+  font-weight: 600;
+}
+
+.msg.error {
+  color: crimson;
+}
+
+/* Loading spinner for form submission */
+.loading {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.playlist-container {
+  min-height: 160px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+
+.thumb {
+  width: 120px;
+  height: 68px;
+  background: #ddd;
+  border-radius: 6px;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.info {
+  flex: 1;
+}
+
+.info h4 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.info p {
+  margin: 6px 0 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.small-btn {
+  background: #f3f3f3;
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.small-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.empty {
+  color: var(--muted);
+  padding: 18px;
+  text-align: center;
+}
+
+/* Logo link styles */
+.logo-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+  transition: 0.3s;
+}
+
+.logo-link:hover {
+  color: var(--accent);
+  transform: scale(1.03);
+}
+
+/* Mobile Responsiveness - FIXED AND COMPLETE */
+@media (max-width: 900px) {
+  .app {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .nav {
+    margin-top: 0;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .nav-item {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  .main {
+    padding: 18px;
+  }
+  
+  .features {
+    flex-direction: column;
+  }
+  
+  .thumb {
+    width: 100px;
+    height: 56px;
+  }
+  
+  .cta-row,
+  .form-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .btn,
+  .btn-outline {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+  
+  .playlist-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .playlist-item .thumb {
+    align-self: flex-start;
+  }
+  
+  .controls {
+    align-self: flex-end;
+  }
+}
