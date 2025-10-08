@@ -1,4 +1,4 @@
-// Firebase Config - Your unique config is already here
+// Firebase Config - Your unique config
 const firebaseConfig = {
   apiKey: "AIzaSyCa7xd7wyEEeoQ4y1HYBSrHr1VNzL1hX8Y",
   authDomain: "lhbc-media-hub.firebaseapp.com",
@@ -9,22 +9,9 @@ const firebaseConfig = {
   measurementId: "G-3SY609VXPJ"
 };
 
-// Initialize Firebase (using CDN for v10 - no install needed)
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { 
-  getFirestore, 
-  collection, 
-  addDoc, 
-  getDocs, 
-  deleteDoc, 
-  doc, 
-  getDoc,
-  orderBy, 
-  query 
-} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// Initialize Firebase (using compat for global access)
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 // Helper: Extract YouTube ID from URL
 function extractYouTubeId(url) {
@@ -54,92 +41,94 @@ function escapeHtml(s) {
 }
 
 // Handle actions: play or delete
-async function handleAction(action, id) {
+function handleAction(action, id) {
   if (action === 'play') {
-    const item = await getSubmission(id);
-    if (item && item.youtube) {
-      window.open(item.youtube, '_blank');
-    } else {
-      showMsg('Could not load video.', true);
-    }
+    getSubmission(id).then(item => {
+      if (item && item.youtube) {
+        window.open(item.youtube, '_blank');
+      } else {
+        showMsg('Could not load video.', true);
+      }
+    });
   } else if (action === 'delete') {
     if (!confirm('Delete this submission? This cannot be undone.')) return;
-    try {
-      await deleteDoc(doc(db, 'submissions', id));
-      renderPlaylist();
-      showMsg('Deleted successfully.');
-    } catch (e) {
-      showMsg('Error deleting: ' + e.message, true);
-    }
+    db.collection('submissions').doc(id).delete()
+      .then(() => {
+        renderPlaylist();
+        showMsg('Deleted successfully.');
+      })
+      .catch(e => {
+        showMsg('Error deleting: ' + e.message, true);
+      });
   }
 }
 
 // Get single submission by doc ID (for play button)
-async function getSubmission(id) {
-  try {
-    const docRef = doc(db, 'submissions', id);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      return { id, ...docSnap.data() };
-    }
-    return null;
-  } catch (e) {
-    console.error('Error fetching submission:', e);
-    return null;
-  }
+function getSubmission(id) {
+  return db.collection('submissions').doc(id).get()
+    .then(docSnap => {
+      if (docSnap.exists) {
+        return { id, ...docSnap.data() };
+      }
+      return null;
+    })
+    .catch(e => {
+      console.error('Error fetching submission:', e);
+      return null;
+    });
 }
 
 // Render playlist from Firebase
-async function renderPlaylist() {
+function renderPlaylist() {
   const container = document.getElementById('playlist');
   if (!container) return;
 
-  try {
-    container.innerHTML = '<div class="loading">Loading submissions...</div>';  // Show loading
-    const q = query(collection(db, 'submissions'), orderBy('created', 'desc'));
-    const snapshot = await getDocs(q);
-    const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+  container.innerHTML = '<div class="loading">Loading submissions...</div>';  // Show loading
 
-    container.innerHTML = '';  // Clear loading
+  db.collection('submissions').orderBy('created', 'desc').get()
+    .then(snapshot => {
+      container.innerHTML = '';  // Clear loading
 
-    if (!data.length) {
-      container.innerHTML = '<div class="empty">No submissions yet. Ask members to submit songs/videos!</div>';
-      return;
-    }
+      if (snapshot.empty) {
+        container.innerHTML = '<div class="empty">No submissions yet. Ask members to submit songs/videos!</div>';
+        return;
+      }
 
-    data.forEach(item => {
-      const div = document.createElement('div');
-      div.className = 'playlist-item';
-      const thumbUrl = item.image || (item.youtubeId ? `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg` : '');
-      div.innerHTML = `
-        <div class="thumb">
-          ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="Thumbnail" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';"/>` : '<div style="background:#ddd;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>'}
-        </div>
-        <div class="info">
-          <h4>${escapeHtml(item.title || '(No title)')}</h4>
-          <p>${escapeHtml(item.performer || 'Unknown')} · ${new Date(item.created).toLocaleString()}</p>
-          ${item.notes ? `<p style="color:var(--muted);font-size:13px;margin-top:8px;">${escapeHtml(item.notes)}</p>` : ''}
-        </div>
-        <div class="controls">
-          <button class="small-btn" data-action="play" data-id="${item.id}">▶ Play</button>
-          <button class="small-btn" data-action="delete" data-id="${item.id}">🗑 Delete</button>
-        </div>
-      `;
-      container.appendChild(div);
-    });
-
-    // Add event listeners to buttons
-    container.querySelectorAll('.controls button').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const action = btn.getAttribute('data-action');
-        const id = btn.getAttribute('data-id');
-        handleAction(action, id);
+      snapshot.forEach(doc => {
+        const item = { id: doc.id, ...doc.data() };
+        const div = document.createElement('div');
+        div.className = 'playlist-item';
+        const thumbUrl = item.image || (item.youtubeId ? `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg` : '');
+        div.innerHTML = `
+          <div class="thumb">
+            ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="Thumbnail" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';"/>` : '<div style="background:#ddd;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>'}
+          </div>
+          <div class="info">
+            <h4>${escapeHtml(item.title || '(No title)')}</h4>
+            <p>${escapeHtml(item.performer || 'Unknown')} · ${new Date(item.created).toLocaleString()}</p>
+            ${item.notes ? `<p style="color:var(--muted);font-size:13px;margin-top:8px;">${escapeHtml(item.notes)}</p>` : ''}
+          </div>
+          <div class="controls">
+            <button class="small-btn" data-action="play" data-id="${item.id}">▶ Play</button>
+            <button class="small-btn" data-action="delete" data-id="${item.id}">🗑 Delete</button>
+          </div>
+        `;
+        container.appendChild(div);
       });
+
+      // Add event listeners to buttons
+      container.querySelectorAll('.controls button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const action = btn.getAttribute('data-action');
+          const id = btn.getAttribute('data-id');
+          handleAction(action, id);
+        });
+      });
+    })
+    .catch(e => {
+      console.error('Error loading playlist:', e);
+      container.innerHTML = '<div class="empty error">Error loading submissions. Check your connection or try refreshing.</div>';
     });
-  } catch (e) {
-    console.error('Error loading playlist:', e);
-    container.innerHTML = '<div class="empty error">Error loading submissions. Check your connection or try refreshing.</div>';
-  }
 }
 
 // Main event listener (runs when page loads)
@@ -147,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle form submission on submit.html
   const form = document.getElementById('submitForm');
   if (form) {
-    form.addEventListener('submit', async (ev) => {
+    form.addEventListener('submit', (ev) => {
       ev.preventDefault();
       
       const submitBtn = form.querySelector('button[type="submit"]');
@@ -183,28 +172,30 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      try {
-        // Save to Firebase
-        await addDoc(collection(db, 'submissions'), {
-          title,
-          performer: performer || null,
-          youtube,
-          youtubeId,
-          image: image || null,
-          notes: notes || null,
-          created: new Date().toISOString()
-        });
+      // Save to Firebase
+      db.collection('submissions').add({
+        title,
+        performer: performer || null,
+        youtube,
+        youtubeId,
+        image: image || null,
+        notes: notes || null,
+        created: firebase.firestore.FieldValue.serverTimestamp()  // Use server time for accurate sorting
+      })
+      .then(() => {
         form.reset();
         showMsg('Submission saved successfully! It will appear in the playlist for everyone to see.');
         // Optionally, redirect to playlist after success
         // window.location.href = 'playlist.html';
-      } catch (e) {
+      })
+      .catch(e => {
         console.error('Error saving submission:', e);
         showMsg('Error saving submission. Please try again or check your connection.', true);
-      }
-
-      submitBtn.innerHTML = originalText;
-      submitBtn.disabled = false;
+      })
+      .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      });
     });
   }
 
