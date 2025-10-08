@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Playlist - Living Hope Media Hub</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+<div class="logo-wrap">
+  <a href="index.html" class="logo-link">
+    <div class="logo-placeholder">LH</div>
+    <div class="site-title">Living Hope Media Hub</div>
+  </a>
+</div>
+      <nav class="nav">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="submit.html" class="nav-item">Submit Song/Video</a>
+        <a href="playlist.html" class="nav-item active">Playlist</a>
+        <a href="about.html" class="nav-item">About</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="header small">
+        <h2>Playlist</h2>
+        <p>Reorder items, preview thumbnails, and play videos (opens YouTube in a new tab).</p>
+      </header>
+
+      <section class="card playlist-container" id="playlist">
+        <!-- JS will render playlist items here -->
+        <div id="empty" class="empty">No submissions yet. Ask members to submit songs.</div>
+      </section>
+
+      <footer class="main-foot">
+        <small>© Living Hope Baptist Church</small>
+      </footer>
+    </main>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
