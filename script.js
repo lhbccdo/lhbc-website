@@ -1,159 +1,158 @@
-// Simple client-side storage for demo
-const STORAGE_KEY = 'lhbc_submissions_v1';
+// Firebase Config - Your unique config is already here
+const firebaseConfig = {
+  apiKey: "AIzaSyCa7xd7wyEEeoQ4y1HYBSrHr1VNzL1hX8Y",
+  authDomain: "lhbc-media-hub.firebaseapp.com",
+  projectId: "lhbc-media-hub",
+  storageBucket: "lhbc-media-hub.firebasestorage.app",
+  messagingSenderId: "451866693777",
+  appId: "1:451866693777:web:bc1c85ceae7d95ef9b2f30",
+  measurementId: "G-3SY609VXPJ"
+};
 
-// Helper: Get list from localStorage
-function readList() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : [];
-  } catch (e) {
-    console.error('Error reading localStorage:', e);
-    return [];
-  }
-}
+// Initialize Firebase (using CDN for v10 - no install needed)
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs, 
+  deleteDoc, 
+  doc, 
+  getDoc,
+  orderBy, 
+  query 
+} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-// Helper: Save list to localStorage
-function saveList(list) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch (e) {
-    console.error('Error saving to localStorage:', e);
-    alert('Storage error: Could not save submission. Please try again.');
-  }
-}
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-// YouTube ID extractor (supports standard YouTube URLs and youtu.be)
+// Helper: Extract YouTube ID from URL
 function extractYouTubeId(url) {
   try {
     const u = new URL(url);
-    if (u.hostname.includes('youtu.be')) {
-      return u.pathname.slice(1);
-    }
-    if (u.searchParams.get('v')) {
-      return u.searchParams.get('v');
-    }
-    // Fallback: last segment of pathname
+    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
+    if (u.searchParams.get('v')) return u.searchParams.get('v');
     const p = u.pathname.split('/');
-    return p.pop();
+    return p.pop() || p[p.length - 2];  // Handle /embed/ or /watch?v=
   } catch (e) {
     return null;
   }
 }
 
-// Show message (success or error)
+// Show message (success/error)
 function showMsg(text, isError = false) {
   const el = document.getElementById('msg');
   if (!el) return;
   el.textContent = text;
   el.className = `msg ${isError ? 'error' : ''}`;
-  setTimeout(() => {
-    el.textContent = '';
-    el.className = 'msg';
-  }, 4000);
+  setTimeout(() => { el.textContent = ''; el.className = 'msg'; }, 4000);
 }
 
 // Escape HTML to prevent XSS
 function escapeHtml(s) {
-  return String(s || '').replace(/[&<>"']/g, function(m) {
-    return {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
-      '"': '&quot;',
-      "'": '&#39;'
-    }[m];
-  });
+  return String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
 }
 
-// Swap array elements for reordering
-function swap(arr, a, b) {
-  [arr[a], arr[b]] = [arr[b], arr[a]];
-}
-
-// Handle playlist actions (up, down, play, delete)
-function handleAction(action, idx) {
-  const list = readList();
+// Handle actions: play or delete
+async function handleAction(action, id) {
   if (action === 'play') {
-    const item = list[idx];
+    const item = await getSubmission(id);
     if (item && item.youtube) {
       window.open(item.youtube, '_blank');
+    } else {
+      showMsg('Could not load video.', true);
     }
   } else if (action === 'delete') {
     if (!confirm('Delete this submission? This cannot be undone.')) return;
-    list.splice(idx, 1);
-    saveList(list);
-    renderPlaylist();
-  } else if (action === 'up') {
-    if (idx <= 0) return;
-    swap(list, idx, idx - 1);
-    saveList(list);
-    renderPlaylist();
-  } else if (action === 'down') {
-    if (idx >= list.length - 1) return;
-    swap(list, idx, idx + 1);
-    saveList(list);
-    renderPlaylist();
+    try {
+      await deleteDoc(doc(db, 'submissions', id));
+      renderPlaylist();
+      showMsg('Deleted successfully.');
+    } catch (e) {
+      showMsg('Error deleting: ' + e.message, true);
+    }
   }
 }
 
-// Render playlist items
-function renderPlaylist() {
+// Get single submission by doc ID (for play button)
+async function getSubmission(id) {
+  try {
+    const docRef = doc(db, 'submissions', id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return { id, ...docSnap.data() };
+    }
+    return null;
+  } catch (e) {
+    console.error('Error fetching submission:', e);
+    return null;
+  }
+}
+
+// Render playlist from Firebase
+async function renderPlaylist() {
   const container = document.getElementById('playlist');
   if (!container) return;
 
-  const data = readList();
-  container.innerHTML = ''; // Clear everything, including initial empty div
+  try {
+    container.innerHTML = '<div class="loading">Loading submissions...</div>';  // Show loading
+    const q = query(collection(db, 'submissions'), orderBy('created', 'desc'));
+    const snapshot = await getDocs(q);
+    const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-  if (!data.length) {
-    container.innerHTML = '<div class="empty">No submissions yet. Ask members to submit songs.</div>';
-    return;
-  }
+    container.innerHTML = '';  // Clear loading
 
-  data.forEach((item, idx) => {
-    const div = document.createElement('div');
-    div.className = 'playlist-item';
-    const thumbUrl = item.image || `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg`;
-    div.innerHTML = `
-      <div class="thumb">
-        <img src="${escapeHtml(thumbUrl)}" alt="Thumbnail for ${escapeHtml(item.title || 'Untitled')}" style="width:100%;height:100%;object-fit:cover;" />
-      </div>
-      <div class="info">
-        <h4>${escapeHtml(item.title || '(No title)')}</h4>
-        <p>${escapeHtml(item.performer || 'Unknown performer')} · ${new Date(item.created).toLocaleString()}</p>
-        ${item.notes ? `<p style="color:var(--muted);font-size:13px;margin-top:8px;">${escapeHtml(item.notes)}</p>` : ''}
-      </div>
-      <div class="controls">
-        <button class="small-btn" data-action="up" data-idx="${idx}">↑</button>
-        <button class="small-btn" data-action="down" data-idx="${idx}">↓</button>
-        <button class="small-btn" data-action="play" data-idx="${idx}">▶ Play</button>
-        <button class="small-btn" data-action="delete" data-idx="${idx}">🗑 Delete</button>
-      </div>
-    `;
-    container.appendChild(div);
-  });
+    if (!data.length) {
+      container.innerHTML = '<div class="empty">No submissions yet. Ask members to submit songs/videos!</div>';
+      return;
+    }
 
-  // Add event listeners to new buttons
-  container.querySelectorAll('.controls button').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const action = btn.getAttribute('data-action');
-      const idx = parseInt(btn.getAttribute('data-idx'), 10);
-      handleAction(action, idx);
+    data.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'playlist-item';
+      const thumbUrl = item.image || (item.youtubeId ? `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg` : '');
+      div.innerHTML = `
+        <div class="thumb">
+          ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="Thumbnail" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';"/>` : '<div style="background:#ddd;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>'}
+        </div>
+        <div class="info">
+          <h4>${escapeHtml(item.title || '(No title)')}</h4>
+          <p>${escapeHtml(item.performer || 'Unknown')} · ${new Date(item.created).toLocaleString()}</p>
+          ${item.notes ? `<p style="color:var(--muted);font-size:13px;margin-top:8px;">${escapeHtml(item.notes)}</p>` : ''}
+        </div>
+        <div class="controls">
+          <button class="small-btn" data-action="play" data-id="${item.id}">▶ Play</button>
+          <button class="small-btn" data-action="delete" data-id="${item.id}">🗑 Delete</button>
+        </div>
+      `;
+      container.appendChild(div);
     });
-  });
+
+    // Add event listeners to buttons
+    container.querySelectorAll('.controls button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const action = btn.getAttribute('data-action');
+        const id = btn.getAttribute('data-id');
+        handleAction(action, id);
+      });
+    });
+  } catch (e) {
+    console.error('Error loading playlist:', e);
+    container.innerHTML = '<div class="empty error">Error loading submissions. Check your connection or try refreshing.</div>';
+  }
 }
 
-// Main event listener
+// Main event listener (runs when page loads)
 document.addEventListener('DOMContentLoaded', () => {
   // Handle form submission on submit.html
   const form = document.getElementById('submitForm');
   if (form) {
-    form.addEventListener('submit', (ev) => {
+    form.addEventListener('submit', async (ev) => {
       ev.preventDefault();
       
-      // Show loading on submit button
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
-      submitBtn.innerHTML = `<span class="loading"></span>Saving...`;
+      submitBtn.innerHTML = '<span class="loading"></span>Saving...';
       submitBtn.disabled = true;
 
       const title = document.getElementById('title').value.trim();
@@ -162,44 +161,54 @@ document.addEventListener('DOMContentLoaded', () => {
       const image = document.getElementById('image').value.trim();
       const notes = document.getElementById('notes').value.trim();
 
-      if (!title || !youtube) {
-        showMsg('Please fill in the required fields (Song Title and YouTube Link).', true);
+      // Validation
+      if (!title) {
+        showMsg('Song title is required.', true);
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        return;
+      }
+      if (!youtube) {
+        showMsg('YouTube link is required.', true);
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         return;
       }
 
-      const id = extractYouTubeId(youtube);
-      if (!id) {
-        showMsg('Invalid YouTube URL. Please provide a valid full URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID).', true);
+      const youtubeId = extractYouTubeId(youtube);
+      if (!youtubeId) {
+        showMsg('Please enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID).', true);
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         return;
       }
 
-      const list = readList();
-      list.push({
-        id: Date.now(),
-        title,
-        performer,
-        youtube,
-        youtubeId: id,
-        image,
-        notes,
-        created: new Date().toISOString()
-      });
+      try {
+        // Save to Firebase
+        await addDoc(collection(db, 'submissions'), {
+          title,
+          performer: performer || null,
+          youtube,
+          youtubeId,
+          image: image || null,
+          notes: notes || null,
+          created: new Date().toISOString()
+        });
+        form.reset();
+        showMsg('Submission saved successfully! It will appear in the playlist for everyone to see.');
+        // Optionally, redirect to playlist after success
+        // window.location.href = 'playlist.html';
+      } catch (e) {
+        console.error('Error saving submission:', e);
+        showMsg('Error saving submission. Please try again or check your connection.', true);
+      }
 
-      saveList(list);
-      form.reset();
-      showMsg('Submission saved successfully! It will appear in the playlist.');
-      
-      // Reset button
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
     });
   }
 
-  // Render playlist on playlist.html
+  // Auto-load playlist on playlist.html
   const playlistEl = document.getElementById('playlist');
   if (playlistEl) {
     renderPlaylist();
