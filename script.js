@@ -1,4 +1,4 @@
-// Firebase Config - Your unique config
+// Firebase Config (your existing)
 const firebaseConfig = {
   apiKey: "AIzaSyCa7xd7wyEEeoQ4y1HYBSrHr1VNzL1hX8Y",
   authDomain: "lhbc-media-hub.firebaseapp.com",
@@ -9,152 +9,173 @@ const firebaseConfig = {
   measurementId: "G-3SY609VXPJ"
 };
 
-// Initialize Firebase (using compat for global access)
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const auth = firebase.auth();
 
-// Disable Firestore persistence for static sites (reduces stream errors)
-db.enablePersistence().catch(err => console.log('Persistence failed:', err));
+// Admin emails (match your rules)
+const ADMIN_EMAILS = ['churchadmin@gmail.com'];  // Add more here
 
-// Helper: Extract YouTube ID from URL
+// Helper: Check if current user is admin
+function isAdmin() {
+  const user = auth.currentUser;
+  return user && ADMIN_EMAILS.includes(user.email);
+}
+
+// Listen for auth changes (auto-redirect or show status)
+auth.onAuthStateChanged(user => {
+  if (user && isAdmin()) {
+    console.log('Admin logged in:', user.email);
+    // Optional: Redirect to playlist
+    if (window.location.pathname.includes('login.html')) {
+      window.location.href = 'playlist.html';
+    }
+  } else if (window.location.pathname.includes('login.html')) {
+    // Stay on login if not admin
+  } else {
+    console.log('Not admin or logged out');
+  }
+  // Re-render playlist if on that page
+  if (document.getElementById('playlist')) {
+    renderPlaylist();
+  }
+});
+
+// Login function
+function handleLogin(email, password) {
+  auth.signInWithEmailAndPassword(email, password)
+    .then(userCredential => {
+      const user = userCredential.user;
+      if (isAdmin()) {
+        showMsg('Login successful! Redirecting to playlist...');
+        setTimeout(() => window.location.href = 'playlist.html', 1500);
+      } else {
+        auth.signOut();  // Log out non-admin
+        showMsg('Access denied. Admin only.', true);
+      }
+    })
+    .catch(e => {
+      console.error('Login error:', e);
+      showMsg(e.message === 'auth/wrong-password' ? 'Wrong password.' : e.message, true);
+    });
+}
+
+// Logout function (add to playlist if needed)
+function logout() {
+  auth.signOut().then(() => {
+    showMsg('Logged out.');
+    window.location.href = 'index.html';
+  });
+}
+
+// Rest of your existing code (extractYouTubeId, showMsg, escapeHtml, etc.) - paste from previous version
 function extractYouTubeId(url) {
   try {
     const u = new URL(url);
     if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
     if (u.searchParams.get('v')) return u.searchParams.get('v');
     const p = u.pathname.split('/');
-    return p.pop() || p[p.length - 2];  // Handle /embed/ or /watch?v=
+    return p.pop() || p[p.length - 2];
   } catch (e) {
     return null;
   }
 }
 
-// Show message (success/error)
 function showMsg(text, isError = false) {
   const el = document.getElementById('msg');
   if (!el) return;
   el.textContent = text;
   el.className = `msg ${isError ? 'error' : ''}`;
-  setTimeout(() => { el.textContent = ''; el.className = 'msg'; }, 5000);  // Longer timeout
+  setTimeout(() => { el.textContent = ''; el.className = 'msg'; }, 5000);
 }
 
-// Escape HTML to prevent XSS
 function escapeHtml(s) {
   return String(s || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
 }
 
-// Handle actions: play or delete
+// Updated handleAction (delete only for admins)
 function handleAction(action, id) {
   if (action === 'play') {
     getSubmission(id).then(item => {
-      if (item && item.youtube) {
-        window.open(item.youtube, '_blank');
-      } else {
-        showMsg('Could not load video. Invalid submission.', true);
-      }
-    }).catch(e => {
-      console.error('Play error:', e);
-      showMsg('Error playing video: ' + e.message, true);
+      if (item && item.youtube) window.open(item.youtube, '_blank');
+      else showMsg('Could not load video.', true);
     });
   } else if (action === 'delete') {
-    if (!confirm('Delete this submission? This cannot be undone.')) return;
+    if (!isAdmin()) {
+      showMsg('Admin login required to delete.', true);
+      window.location.href = 'login.html';
+      return;
+    }
+    if (!confirm('Delete this submission?')) return;
     db.collection('submissions').doc(id).delete()
       .then(() => {
         renderPlaylist();
         showMsg('Deleted successfully.');
       })
-      .catch(e => {
-        console.error('Delete error:', e);
-        showMsg('Error deleting: ' + (e.code === 'permission-denied' ? 'Check database rules.' : e.message), true);
-      });
+      .catch(e => showMsg('Error deleting: ' + e.message, true));
   }
 }
 
-// Get single submission by doc ID (for play button)
+// getSubmission, renderPlaylist, form submit - paste from your previous script.js (unchanged except for admin check in render)
 function getSubmission(id) {
   return db.collection('submissions').doc(id).get()
-    .then(docSnap => {
-      if (docSnap.exists) {
-        return { id, ...docSnap.data() };
-      }
-      return null;
-    })
-    .catch(e => {
-      console.error('Fetch submission error:', e);
-      return null;
-    });
+    .then(docSnap => docSnap.exists ? { id, ...docSnap.data() } : null)
+    .catch(e => { console.error('Fetch error:', e); return null; });
 }
 
-// Render playlist from Firebase
 function renderPlaylist() {
   const container = document.getElementById('playlist');
   if (!container) return;
-
-  container.innerHTML = '<div class="loading">Loading submissions...</div>';
+  container.innerHTML = '<div class="loading">Loading...</div>';
 
   db.collection('submissions').orderBy('created', 'desc').get()
     .then(snapshot => {
       container.innerHTML = '';
-
       if (snapshot.empty) {
-        container.innerHTML = '<div class="empty">No submissions yet. Ask members to submit songs/videos!</div>';
+        container.innerHTML = '<div class="empty">No submissions yet.</div>';
         return;
       }
-
-      let itemCount = 0;
       snapshot.forEach(doc => {
         const item = { id: doc.id, ...doc.data() };
         const div = document.createElement('div');
         div.className = 'playlist-item';
         const thumbUrl = item.image || (item.youtubeId ? `https://img.youtube.com/vi/${item.youtubeId}/hqdefault.jpg` : '');
         div.innerHTML = `
-          <div class="thumb">
-            ${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="Thumbnail" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';"/>` : '<div style="background:#ddd;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>'}
-          </div>
+          <div class="thumb">${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="Thumbnail" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';"/>` : '<div style="background:#ddd;width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>'}</div>
           <div class="info">
             <h4>${escapeHtml(item.title || '(No title)')}</h4>
-            <p>${escapeHtml(item.performer || 'Unknown')} · ${item.created ? new Date(item.created.toDate()).toLocaleString() : 'Unknown date'}</p>
+            <p>${escapeHtml(item.performer || 'Unknown')} · ${item.created ? new Date(item.created.toDate()).toLocaleString() : 'Unknown'}</p>
             ${item.notes ? `<p style="color:var(--muted);font-size:13px;margin-top:8px;">${escapeHtml(item.notes)}</p>` : ''}
           </div>
           <div class="controls">
             <button class="small-btn" data-action="play" data-id="${item.id}">▶ Play</button>
-            <button class="small-btn" data-action="delete" data-id="${item.id}">🗑 Delete</button>
+            ${isAdmin() ? `<button class="small-btn" data-action="delete" data-id="${item.id}">🗑 Delete</button>` : ''}
           </div>
         `;
         container.appendChild(div);
-        itemCount++;
       });
-
-      // Add event listeners
+      // Event listeners
       container.querySelectorAll('.controls button').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const action = btn.getAttribute('data-action');
-          const id = btn.getAttribute('data-id');
+        btn.addEventListener('click', e => {
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
           handleAction(action, id);
         });
       });
-
-      console.log(`Loaded ${itemCount} submissions successfully.`);
     })
     .catch(e => {
-      console.error('Playlist load error:', e);
-      let msg = 'Error loading playlist: ';
-      if (e.code === 'permission-denied') msg += 'Database rules block access. Update rules in Firebase.';
-      else if (e.code === 'unavailable') msg += 'No internet or server issue. Try refreshing.';
-      else msg += e.message;
-      container.innerHTML = `<div class="empty error">${msg}</div>`;
-      showMsg(msg, true);
+      console.error('Playlist error:', e);
+      container.innerHTML = '<div class="empty error">Error loading: ' + e.message + '</div>';
     });
 }
 
-// Main event listener
+// Form submit (unchanged)
 document.addEventListener('DOMContentLoaded', () => {
-  // Handle form submission
   const form = document.getElementById('submitForm');
   if (form) {
-    form.addEventListener('submit', (ev) => {
+    form.addEventListener('submit', ev => {
       ev.preventDefault();
-      
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.innerHTML;
       submitBtn.innerHTML = '<span class="loading"></span>Saving...';
@@ -166,62 +187,50 @@ document.addEventListener('DOMContentLoaded', () => {
       const image = document.getElementById('image').value.trim();
       const notes = document.getElementById('notes').value.trim();
 
-      // Validation
-      if (!title) {
-        showMsg('Song title is required.', true);
-        resetBtn();
-        return;
-      }
-      if (!youtube) {
-        showMsg('YouTube link is required.', true);
-        resetBtn();
+      if (!title || !youtube) {
+        showMsg('Title and YouTube required.', true);
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
         return;
       }
 
       const youtubeId = extractYouTubeId(youtube);
       if (!youtubeId) {
-        showMsg('Please enter a valid YouTube URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID).', true);
-        resetBtn();
+        showMsg('Invalid YouTube URL.', true);
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
         return;
       }
 
-      function resetBtn() {
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-      }
-
-      // Save to Firebase (use client timestamp to avoid clock issues)
       db.collection('submissions').add({
-        title,
-        performer: performer || null,
-        youtube,
-        youtubeId,
-        image: image || null,
-        notes: notes || null,
-        created: firebase.firestore.Timestamp.now()  // Server-synced timestamp
-      })
-      .then(() => {
+        title, performer: performer || null, youtube, youtubeId, image: image || null, notes: notes || null,
+        created: firebase.firestore.Timestamp.now()
+      }).then(() => {
         form.reset();
-        showMsg('Submission saved! View it in the playlist on any device.');
-        console.log('Submission saved successfully.');
-        // Optional: Redirect to playlist
-        // setTimeout(() => window.location.href = 'playlist.html', 2000);
-      })
-      .catch(e => {
-        console.error('Submit error:', e);
-        let msg = 'Error saving: ';
-        if (e.code === 'permission-denied') msg += 'Database rules block writes. Update in Firebase Console.';
-        else if (e.code === 'unavailable') msg += 'No internet. Try again.';
-        else msg += e.message;
-        showMsg(msg, true);
-      })
-      .finally(() => resetBtn());
+        showMsg('Saved! View in playlist.');
+      }).catch(e => showMsg('Save error: ' + e.message, true))
+        .finally(() => {
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        });
+    });
+  }
+
+  // Login form
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', ev => {
+      ev.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (!email || !password) {
+        showMsg('Email and password required.', true);
+        return;
+      }
+      handleLogin(email, password);
     });
   }
 
   // Load playlist
-  const playlistEl = document.getElementById('playlist');
-  if (playlistEl) {
-    renderPlaylist();
-  }
+  if (document.getElementById('playlist')) renderPlaylist();
 });
