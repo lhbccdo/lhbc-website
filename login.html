@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Login - Living Hope Media Hub</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-placeholder">LH</div>
+          <div class="site-title">Living Hope Media Hub</div>
+        </a>
+      </div>
+      <nav class="nav">
+        <a href="index.html" class="nav-item">Home</a>
+        <a href="submit.html" class="nav-item">Submit Song/Video</a>
+        <a href="playlist.html" class="nav-item">Playlist</a>
+        <a href="about.html" class="nav-item">About</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="header small">
+        <h2>Admin Login</h2>
+        <p>Log in to manage the playlist (delete items).</p>
+      </header>
+
+      <section class="card form-section">
+        <form id="loginForm">
+          <label>Email
+            <input type="email" id="email" required placeholder="churchadmin@gmail.com" />
+          </label>
+
+          <label>Password
+            <input type="password" id="password" required placeholder="Enter password" />
+          </label>
+
+          <div class="form-actions">
+            <button class="btn" type="submit">Login</button>
+            <a class="btn btn-outline" href="playlist.html">Back to Playlist</a>
+          </div>
+
+          <p id="msg" class="msg"></p>
+        </form>
+      </section>
+
+      <footer class="main-foot">
+        <small>© Living Hope Baptist Church</small>
+      </footer>
+    </main>
+  </div>
+
+  <script src="script.js" defer></script>
+</form>
+</body>
+</html>
