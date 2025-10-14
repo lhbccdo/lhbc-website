@@ -1,11 +1,11 @@
-// Firebase Config (your existing)
+// Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyCa7xd7wyEEeoQ4y1HYBSrHr1VNzL1hX8Y",
+  apiKey: "YOUR_NEW_API_KEY_HERE",
   authDomain: "lhbc-media-hub.firebaseapp.com",
   projectId: "lhbc-media-hub",
   storageBucket: "lhbc-media-hub.firebasestorage.app",
   messagingSenderId: "451866693777",
-  appId: "1:451866693777:web:bc1c85ceae7d95ef9b2f30",
+  appId: "1:451866693777:web:dcdc3f8fa6f4b5c79b2f30",
   measurementId: "G-3SY609VXPJ"
 };
 
@@ -15,7 +15,8 @@ const db = firebase.firestore();
 const auth = firebase.auth();
 
 // Admin emails (match your rules)
-const ADMIN_EMAILS = ['churchadmin@gmail.com'];  // Add more here
+const ADMIN_EMAILS = ['lhbc.cdo@gmail.com']; 
+const ADMIN_EMAILS = ['hans55jerald@gmail.com'];
 
 // Helper: Check if current user is admin
 function isAdmin() {
@@ -234,3 +235,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load playlist
   if (document.getElementById('playlist')) renderPlaylist();
 });
+
