@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Panel - Living Hope Media Hub</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <!-- Logo-only header for non-home pages -->
+  <header class="logo-header"><a href="index.html" class="logo">Living Hope Media Hub</a></header>
+  <div class="app">
+    <main class="main">
+      <header class="header small">
+        <h2>Admin Panel</h2>
+        <p>Manage the playlist: view, play, and delete submissions.</p>
+      </header>
+
+      <!-- Admin Login Form (shown only if not logged in) -->
+      <section class="card form-section admin-login-card" id="adminLoginFormContainer">
+        <h3>Admin Login</h3>
+        <p>Log in with an administrator account to access management features.</p>
+        <form id="adminLoginForm">
+          <label>Email
+            <input type="email" id="email" required placeholder="churchadmin@gmail.com" />
+          </label>
+          <label>Password
+            <input type="password" id="password" required placeholder="Enter password" />
+          </label>
+          <div class="form-actions">
+            <button class="btn" type="submit">Login</button>
+            <a class="btn btn-outline" href="index.html">Back to Home</a>
+          </div>
+          <p id="msg" class="msg"></p>
+        </form>
+      </section>
+
+      <!-- Admin Controls Panel (shown if logged in as admin) -->
+      <div id="adminControlsPanel" class="admin-controls-panel" style="display: none;">
+        <button id="adminLogoutButton" class="btn btn-outline">Sign Out</button>
+      </div>
+
+      <section class="card playlist-container" id="playlist">
+        <!-- Playlist items will be rendered here by JS if admin is logged in -->
+        <div class="empty">Please log in as an administrator to manage the playlist.</div>
+      </section>
+
+      <footer class="main-foot">
+        <small>© Living Hope Baptist Church</small>
+      </footer>
+    </main>
+  </div>
+
+  <script type="module" src="script.js" defer></script> <!-- Type="module" for ES Modules -->
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <div id="loader" class="loader" aria-hidden="true" style="display:none;"></div>
+</body>
+</html>

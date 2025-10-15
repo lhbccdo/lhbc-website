@@ -5,29 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Submit - Living Hope Media Hub</title>
   <link rel="stylesheet" href="styles.css" />
-  <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
+  <!-- Logo-only header for non-home pages -->
+  <header class="logo-header"><a href="index.html" class="logo">Living Hope Media Hub</a></header>
   <div class="app">
-    <aside class="sidebar">
-<div class="logo-wrap">
-  <a href="index.html" class="logo-link">
-    <div class="logo-placeholder">LH</div>
-    <div class="site-title">Living Hope Media Hub</div>
-  </a>
-</div>
-
-      <nav class="nav">
-        <a href="login.html" class="nav-item">Admin Login</a>
-        <a href="index.html" class="nav-item">Home</a>
-        <a href="submit.html" class="nav-item active">Submit Song/Video</a>
-        <a href="playlist.html" class="nav-item">Playlist</a>
-        <a href="about.html" class="nav-item">About</a>
-      </nav>
-    </aside>
-
     <main class="main">
       <header class="header small">
         <h2>Submit Special Number</h2>
@@ -71,8 +56,9 @@
     </main>
   </div>
 
-  <script src="script.js" defer></script>
+  <script type="module" src="script.js" defer></script> <!-- Type="module" for ES Modules -->
+
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+  <div id="loader" class="loader" aria-hidden="true" style="display:none;"></div>
 </body>
-
 </html>
-
