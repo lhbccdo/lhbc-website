@@ -252,6 +252,13 @@ body {
   box-shadow: var(--shadow-hover);
 }
 
+/* Full-width card for pages like about */
+.card.full-width {
+  max-width: var(--maxw);
+  width: 100%;
+  margin: 0 auto;
+}
+
 .features .card h3 {
   margin: 0 0 10px 0;
   font-size: 20px;
@@ -392,7 +399,7 @@ body {
 /* --- Playlist --- */
 .playlist-container {
   min-height: 180px;
-  padding: 20px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -400,11 +407,15 @@ body {
   border-radius: var(--radius-medium);
   box-shadow: var(--shadow-subtle);
   border: 1px solid var(--border-light);
+  width: 100%;
+  max-width: var(--maxw); /* keep playlist constrained on large screens */
+  margin: 0 auto; /* center the playlist on desktop */
 }
 
 .playlist-item {
   display: flex;
   align-items: center;
+  justify-content: space-between; /* allow info and controls to sit apart */
   gap: 20px; /* More space for cleaner look */
   padding: 15px; /* More padding */
   border-radius: var(--radius-small);
@@ -412,6 +423,7 @@ body {
   background: #FDFEFE; /* Slightly off-white for playlist items */
   box-shadow: 0 2px 6px rgba(0,0,0,0.03);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%; /* make each item fill the container width */
 }
 
 .playlist-item:hover {
@@ -430,6 +442,10 @@ body {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border-medium);
+}
+
+.playlist-container .info {
+  margin-right: 12px; /* small spacing from controls */
 }
 
 .thumb img {
