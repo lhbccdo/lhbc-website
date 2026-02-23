@@ -334,4 +334,21 @@ document.addEventListener('DOMContentLoaded', () => {
       handleLogin(email, password);
     });
   }
+
+  // Back button visibility: hide when there is no history to go back to
+  const backBtn = document.getElementById('back-button');
+  if (backBtn) {
+    try {
+      // history.length may be 1 when the user opened page directly
+      if (window.history && window.history.length > 1) {
+        backBtn.style.display = 'inline-flex';
+      } else {
+        backBtn.style.display = 'none';
+      }
+    } catch (e) {
+      // Fallback: show button
+      backBtn.style.display = 'inline-flex';
+    }
+    backBtn.addEventListener('click', () => { window.history.back(); });
+  }
 });
