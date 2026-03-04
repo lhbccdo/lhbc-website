@@ -71,7 +71,7 @@ body {
 
 .full-header .logo {
   font-weight: 700;
-  font-size: 20px; /* Slightly smaller, more refined logo font */
+  font-size: 25px; /* Slightly smaller, more refined logo font */
   color: var(--text-dark);
   text-decoration: none;
   letter-spacing: -0.5px; /* Tighter letter spacing */
@@ -92,44 +92,44 @@ body {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  padding: 10px 10px;
-  border-radius: 10px;
+  padding: 6px 6px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
 .bar1 {
   border-radius: 30px;
   background-color: rgb(255, 255, 255);
-  width: 35px;
-  margin-bottom: 10px;
+  width: 24px;
+  margin-bottom: 6px;
   transition: 0.4s;
-  height: 3px;
+  height: 2px;
 }
 
 .bar2 {
   border-radius: 30px;
   background-color: rgb(255, 255, 255);
-  width: 35px;
+  width: 24px;
   position: absolute;
   transition: 0.4s;
-  height: 3px;
+  height: 2px;
 }
 
 .bar3_h {
   border-radius: 30px;
   background-color: rgb(255, 255, 255);
-  width: 35px;
+  width: 24px;
   transition: 0.4s;
-  height: 3px;
+  height: 2px;
 }
 
 .bar4 {
   border-radius: 30px;
   background-color: rgb(255, 255, 255);
-  width: 35px;
-  margin-top: 10px;
+  width: 24px;
+  margin-top: 6px;
   transition: 0.4s;
-  height: 3px;
+  height: 2px;
 }
 
 .nav_bar:hover {
@@ -146,12 +146,12 @@ body {
 
 .nav_bar:hover .bar1 {
   opacity: 0;
-  width: 20px;
+  width: 14px;
 }
 
 .nav_bar:hover .bar4 {
   opacity: 0;
-  width: 20px;
+  width: 14px;
 }
 
 .full-nav-item {
