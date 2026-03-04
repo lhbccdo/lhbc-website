@@ -83,6 +83,77 @@ body {
   align-items: center;
 }
 
+/* Animated nav bar - From Uiverse.io by MopokD71304 */
+.nav_bar {
+  background-color: rgb(27, 27, 27);
+  position: relative;
+  display: none; /* Hidden on desktop */
+  transition: 0.4s;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.bar1 {
+  border-radius: 30px;
+  background-color: rgb(255, 255, 255);
+  width: 35px;
+  margin-bottom: 10px;
+  transition: 0.4s;
+  height: 3px;
+}
+
+.bar2 {
+  border-radius: 30px;
+  background-color: rgb(255, 255, 255);
+  width: 35px;
+  position: absolute;
+  transition: 0.4s;
+  height: 3px;
+}
+
+.bar3_h {
+  border-radius: 30px;
+  background-color: rgb(255, 255, 255);
+  width: 35px;
+  transition: 0.4s;
+  height: 3px;
+}
+
+.bar4 {
+  border-radius: 30px;
+  background-color: rgb(255, 255, 255);
+  width: 35px;
+  margin-top: 10px;
+  transition: 0.4s;
+  height: 3px;
+}
+
+.nav_bar:hover {
+  border-radius: 50px;
+}
+
+.nav_bar:hover .bar3_h {
+  transform: rotate(-45deg);
+}
+
+.nav_bar:hover .bar2 {
+  transform: rotate(45deg);
+}
+
+.nav_bar:hover .bar1 {
+  opacity: 0;
+  width: 20px;
+}
+
+.nav_bar:hover .bar4 {
+  opacity: 0;
+  width: 20px;
+}
+
 .full-nav-item {
   text-decoration: none;
   color: var(--text-muted); /* Muted color for inactive nav items */
@@ -650,19 +721,47 @@ body {
     font-size: 18px;
   }
 
+  /* Show nav bar on mobile */
+  .nav_bar {
+    display: flex;
+  }
+
+  /* Hide desktop nav and show mobile nav dropdown */
   .full-nav {
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 10px; /* Add some space if wrapping */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--card-bg);
+    flex-direction: column;
+    gap: 0;
+    padding: 15px;
+    border-bottom: 1px solid var(--border-light);
+    box-shadow: 0 4px 12px rgba(29, 19, 74, 0.08);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+  }
+
+  /* Show nav when menu is open */
+  .full-nav.open {
+    max-height: 400px;
   }
 
   .full-nav-item {
-    padding: 6px 10px;
-    font-size: 13px;
+    padding: 12px 0;
+    font-size: 15px;
+    border-bottom: 1px solid var(--border-light);
+    display: block;
+    color: var(--text-primary);
   }
+
+  .full-nav-item:last-child {
+    border-bottom: none;
+  }
+
   .full-nav-item.active::after {
-      bottom: -3px; /* Adjust underline position */
+    display: none; /* Remove underline on mobile */
   }
 
 
@@ -786,4 +885,36 @@ body {
 
 @media (max-width: 600px) {
   .back-btn { left: 12px; top: 64px; padding: 9px 10px; font-size: 14px; }
+}
+/* button */ 
+button {
+ display: flex;
+ height: 3em;
+ width: 100px;
+ align-items: center;
+ justify-content: center;
+ background-color: #eeeeee4b;
+ border-radius: 3px;
+ letter-spacing: 1px;
+ transition: all 0.2s linear;
+ cursor: pointer;
+ border: none;
+ background: #fff;
+}
+
+button > svg {
+ margin-right: 5px;
+ margin-left: 5px;
+ font-size: 20px;
+ transition: all 0.4s ease-in;
+}
+
+button:hover > svg {
+ font-size: 1.2em;
+ transform: translateX(-5px);
+}
+
+button:hover {
+ box-shadow: 9px 9px 33px #d1d1d1, -9px -9px 33px #ffffff;
+ transform: translateY(-2px);
 }
