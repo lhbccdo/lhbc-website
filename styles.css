@@ -85,7 +85,7 @@ body {
 
 /* Animated nav bar - From Uiverse.io by MopokD71304 */
 .nav_bar {
-  background-color: rgb(27, 27, 27);
+  background-color: var(--accent-blue);
   position: relative;
   display: none; /* Hidden on desktop */
   transition: 0.4s;
