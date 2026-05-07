@@ -4,25 +4,29 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Home - Living Hope Media Hub</title>
+  <link rel="icon" type="image/png" href="assets/image/logo.png" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <!-- Full header for home page -->
   <header class="full-header">
-    <a href="index.html" class="logo">Living Hope Media Hub</a>
-    <div class="nav_bar" id="navToggle">
-      <div class="bar1"></div>
-      <div class="bar2"></div>
-      <div class="bar3_h"></div>
-      <div class="bar4"></div>
-    </div>
+    <a href="index.html" class="logo brand-logo">
+      <img src="assets/image/logo.png" alt="Living Hope Baptist Church logo" />
+      <span>Living Hope Media Hub</span>
+    </a>
+    <button class="nav_bar" id="navToggle" type="button" aria-label="Open navigation">
+      <span class="bar1"></span>
+      <span class="bar2"></span>
+      <span class="bar3_h"></span>
+      <span class="bar4"></span>
+    </button>
     <nav class="full-nav" id="navMenu">
       <a href="index.html" class="full-nav-item active">Home</a>
       <a href="about.html" class="full-nav-item">About</a>
       <a href="submit.html" class="full-nav-item">Submit</a>
+      <a href="playlist.html" class="full-nav-item">Playlist</a>
       <a href="admin.html" class="full-nav-item" id="loginNavItem">Login</a>
       <a href="admin.html" class="full-nav-item" id="adminPanelNavItem" style="display:none;">Admin Panel</a>
     </nav>
@@ -31,8 +35,9 @@
   <div class="app">
     <main class="main">
       <header class="header">
-        <h1>Welcome to Living Hope Media Hub</h1>
-        <p class="lead">Prepare worship media in advance for smooth services. Submit songs and videos to build our playlist.</p>
+        <p class="eyebrow">Living Hope Baptist Church</p>
+        <h1>Prepare worship media with clarity and care.</h1>
+        <p class="lead">Submit songs and videos early, review the playlist, and keep service preparation organized for the whole media team.</p>
       </header>
 
       <div class="cta-row">
@@ -40,28 +45,31 @@
         <a href="playlist.html" class="btn btn-outline">View Playlist</a>
       </div>
 
-      <section class="features">
-        <div class="card">
+      <section class="features" aria-label="Media hub features">
+        <article class="card">
+          <img class="category-image" src="assets/category-submission.svg" alt="Easy Submission category image" />
           <h3>Easy Submission</h3>
           <p>Share YouTube links for songs or videos. Add titles, performers, and notes to help plan worship.</p>
-        </div>
-        <div class="card">
+        </article>
+        <article class="card">
+          <img class="category-image" src="assets/category-playlist.svg" alt="Organized Playlist category image" />
           <h3>Organized Playlist</h3>
           <p>View, reorder, and manage submissions. Play previews directly in a new tab.</p>
-        </div>
-        <div class="card">
+        </article>
+        <article class="card">
+          <img class="category-image" src="assets/category-church.svg" alt="Church-Focused category image" />
           <h3>Church-Focused</h3>
           <p>Built for Living Hope Baptist Church to streamline media prep. Contact us for support.</p>
-        </div>
+        </article>
       </section>
 
       <footer class="main-foot">
-        <small>© Living Hope Baptist Church</small>
+        <small>&copy; Living Hope Baptist Church</small>
       </footer>
     </main>
   </div>
 
-  <script type="module" src="script.js" defer></script> <!-- Type="module" for ES Modules -->
+  <script type="module" src="script.js" defer></script>
 
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
   <div id="loader" class="loader" aria-hidden="true" style="display:none;"></div>

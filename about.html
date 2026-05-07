@@ -4,47 +4,62 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>About - Living Hope Media Hub</title>
+  <link rel="icon" type="image/png" href="assets/image/logo.png" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <header class="logo-header"><a href="index.html" class="logo">Living Hope Media Hub</a></header>
-
-  <button id="back-button" class="back-btn" aria-label="Go back" onclick="window.location.href='index.html'">← Back</button>
+  <header class="full-header">
+    <a href="index.html" class="logo brand-logo">
+      <img src="assets/image/logo.png" alt="Living Hope Baptist Church logo" />
+      <span>Living Hope Media Hub</span>
+    </a>
+    <button class="nav_bar" id="navToggle" type="button" aria-label="Open navigation">
+      <span class="bar1"></span>
+      <span class="bar2"></span>
+      <span class="bar3_h"></span>
+      <span class="bar4"></span>
+    </button>
+    <nav class="full-nav" id="navMenu">
+      <a href="index.html" class="full-nav-item">Home</a>
+      <a href="about.html" class="full-nav-item active">About</a>
+      <a href="submit.html" class="full-nav-item">Submit</a>
+      <a href="playlist.html" class="full-nav-item">Playlist</a>
+      <a href="admin.html" class="full-nav-item" id="loginNavItem">Login</a>
+      <a href="admin.html" class="full-nav-item" id="adminPanelNavItem" style="display:none;">Admin Panel</a>
+    </nav>
+  </header>
 
   <div class="app">
-    
-
     <main class="main">
       <header class="header small">
+        <p class="eyebrow">About the church</p>
         <h2>About Living Hope</h2>
       </header>
 
-      <section class="card full-width">
+      <section class="card full-width content-card">
         <h3>About</h3>
-        <p><strong>Living Hope Baptist Church</strong> — Jesus Christ is our Living Hope. This site is created to help prepare worship songs in advance so services run smoothly. For more details, contact the church via the Facebook page.</p>
-        <p>Service times: Sunday 9:00 AM</p>
+        <p><strong>Living Hope Baptist Church</strong> exists to lift up Jesus Christ, our Living Hope. This site helps the church prepare worship songs in advance so services run smoothly. For more details, contact the church via the Facebook page.</p>
+        <p><strong>Service time:</strong> Sunday 9:30 AM</p>
 
         <h3>Contact Info</h3>
         <p><strong>Address:</strong> Singapore Road, Balongis, Balulang, Cagayan de Oro City, Cagayan de Oro, Philippines, 9000</p>
         <p><strong>Mobile:</strong> 0917 319 9372</p>
         <p><strong>Email:</strong> <a href="mailto:vicjoy.vm@gmail.com">vicjoy.vm@gmail.com</a></p>
-        <p><strong>Facebook:</strong> <a href="https://www.facebook.com/LHBCministries" target="_blank">https://www.facebook.com/LHBCministries</a></p>
+        <p><strong>Facebook:</strong> <a href="https://www.facebook.com/LHBCministries" target="_blank" rel="noreferrer">https://www.facebook.com/LHBCministries</a></p>
       </section>
 
       <footer class="main-foot">
-        <small>© Living Hope Baptist Church</small>
+        <small>&copy; Living Hope Baptist Church</small>
       </footer>
     </main>
   </div>
 
-  <script src="script.js" defer></script>
+  <script type="module" src="script.js" defer></script>
 
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
-
   <div id="loader" class="loader" aria-hidden="true" style="display:none;"></div>
 </body>
-
 </html>

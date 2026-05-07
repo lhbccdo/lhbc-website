@@ -5,7 +5,7 @@ import { db, auth, ADMIN_EMAILS, isAdminUser, extractYouTubeId, showToast } from
 function showLoader(show) {
   const el = document.getElementById('loader');
   if (!el) return;
-  el.style.display = show ? 'block' : 'none';
+  el.style.display = show ? 'flex' : 'none';
 }
 
 function setCompactHeader(enable) {
@@ -141,12 +141,12 @@ function renderAdminPlaylist() {
                     <div class="thumb">${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="Thumbnail" onerror="this.src='https://via.placeholder.com/140x80?text=No+Image';"/>` : '<div class="thumb-placeholder">No Image</div>'}</div>
                     <div class="info">
                         <h4>${escapeHtml(item.title || '(No title)')}</h4>
-                        <p>${escapeHtml(item.performer || 'Unknown')} · ${createdDate}</p>
-                        ${item.notes ? `<p style="color:var(--muted);font-size:13px;margin-top:8px;">${escapeHtml(item.notes)}</p>` : ''}
+                        <p>${escapeHtml(item.performer || 'Unknown')} - ${createdDate}</p>
+                        ${item.notes ? `<p class="item-notes">${escapeHtml(item.notes)}</p>` : ''}
                     </div>
                     <div class="controls">
-                        <button class="small-btn" data-action="play" data-id="${item.id}">▶ Play</button>
-                        <button class="small-btn small-btn-delete" data-action="delete" data-id="${item.id}">🗑 Delete</button>
+                        <button class="small-btn" type="button" data-action="play" data-id="${item.id}">Play</button>
+                        <button class="small-btn small-btn-delete" type="button" data-action="delete" data-id="${item.id}">Delete</button>
                     </div>
                 `;
                 container.appendChild(div);
@@ -190,11 +190,11 @@ function renderPublicPlaylist() {
                     <div class="thumb">${thumbUrl ? `<img src="${escapeHtml(thumbUrl)}" alt="Thumbnail" onerror="this.src='https://via.placeholder.com/140x80?text=No+Image';"/>` : '<div class="thumb-placeholder">No Image</div>'}</div>
                     <div class="info">
                         <h4>${escapeHtml(item.title || '(No title)')}</h4>
-                        <p>${escapeHtml(item.performer || 'Unknown')} · ${createdDate}</p>
-                        ${item.notes ? `<p style="color:var(--muted);font-size:13px;margin-top:8px;">${escapeHtml(item.notes)}</p>` : ''}
+                        <p>${escapeHtml(item.performer || 'Unknown')} - ${createdDate}</p>
+                        ${item.notes ? `<p class="item-notes">${escapeHtml(item.notes)}</p>` : ''}
                     </div>
                     <div class="controls">
-                        <button class="small-btn" data-action="play" data-id="${item.id}">▶ Play</button>
+                        <button class="small-btn" type="button" data-action="play" data-id="${item.id}">Play</button>
                     </div>
                 `;
                 container.appendChild(div);

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Church-focused category image placeholder</title>
+  <desc id="desc">A simple church-focused placeholder image.</desc>
+  <rect width="640" height="360" fill="#f7f2e8"/>
+  <path d="M320 80v70" stroke="#2c3e50" stroke-width="18" stroke-linecap="round"/>
+  <path d="M288 112h64" stroke="#2c3e50" stroke-width="18" stroke-linecap="round"/>
+  <path d="M190 286v-98l130-88 130 88v98" fill="#fff" stroke="#2c3e50" stroke-width="16" stroke-linejoin="round"/>
+  <path d="M280 286v-72c0-22 18-40 40-40s40 18 40 40v72" fill="#3498db"/>
+  <path d="M118 286h404" stroke="#d7c29c" stroke-width="16" stroke-linecap="round"/>
+</svg>

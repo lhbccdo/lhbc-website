@@ -4,20 +4,38 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Submit - Living Hope Media Hub</title>
+  <link rel="icon" type="image/png" href="assets/image/logo.png" />
   <link rel="stylesheet" href="styles.css" />
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 </head>
 <body>
-  <!-- Logo-only header for non-home pages -->
-  <header class="logo-header"><a href="index.html" class="logo">Living Hope Media Hub</a></header>
-
-  <button id="back-button" class="back-btn" aria-label="Go back" onclick="window.location.href='index.html'">← Back</button>
+  <header class="full-header">
+    <a href="index.html" class="logo brand-logo">
+      <img src="assets/image/logo.png" alt="Living Hope Baptist Church logo" />
+      <span>Living Hope Media Hub</span>
+    </a>
+    <button class="nav_bar" id="navToggle" type="button" aria-label="Open navigation">
+      <span class="bar1"></span>
+      <span class="bar2"></span>
+      <span class="bar3_h"></span>
+      <span class="bar4"></span>
+    </button>
+    <nav class="full-nav" id="navMenu">
+      <a href="index.html" class="full-nav-item">Home</a>
+      <a href="about.html" class="full-nav-item">About</a>
+      <a href="submit.html" class="full-nav-item active">Submit</a>
+      <a href="playlist.html" class="full-nav-item">Playlist</a>
+      <a href="admin.html" class="full-nav-item" id="loginNavItem">Login</a>
+      <a href="admin.html" class="full-nav-item" id="adminPanelNavItem" style="display:none;">Admin Panel</a>
+    </nav>
+  </header>
 
   <div class="app">
     <main class="main">
       <header class="header small">
+        <p class="eyebrow">Media request</p>
         <h2>Submit Special Number</h2>
         <p>Members can submit their song or video in advance. Fill the form below.</p>
       </header>
@@ -54,12 +72,12 @@
       </section>
 
       <footer class="main-foot">
-        <small>© Living Hope Baptist Church</small>
+        <small>&copy; Living Hope Baptist Church</small>
       </footer>
     </main>
   </div>
 
-  <script type="module" src="script.js" defer></script> <!-- Type="module" for ES Modules -->
+  <script type="module" src="script.js" defer></script>
 
   <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
   <div id="loader" class="loader" aria-hidden="true" style="display:none;"></div>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Living Hope Baptist Church logo</title>
+  <desc id="desc">A black church outline with a cross under a semicircle and Living Hope Baptist Church text.</desc>
+  <rect width="512" height="512" fill="#fff"/>
+  <path d="M63 360a193 193 0 0 1 386 0" fill="none" stroke="#000" stroke-width="24" stroke-linecap="square"/>
+  <path d="M211 112h90" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <path d="M256 82v98" stroke="#000" stroke-width="22" stroke-linecap="round"/>
+  <path d="M206 360V252l50-70 50 70v108" fill="none" stroke="#000" stroke-width="20" stroke-linejoin="miter"/>
+  <path d="M152 360v-66l54-42" fill="none" stroke="#000" stroke-width="14" stroke-linejoin="miter"/>
+  <path d="M360 360v-66l-54-42" fill="none" stroke="#000" stroke-width="14" stroke-linejoin="miter"/>
+  <path d="M61 380h20v44h28v16H61zm65 0h20v60h-20zm43 0h21l15 37 15-37h21l-27 60h-18zm91 0h20v60h-20zm43 0h18l25 29v-29h20v60h-17l-26-30v30h-20zm86 30c0-18 14-32 34-32 11 0 20 4 26 11l-13 12c-4-4-8-6-13-6-8 0-14 6-14 15s6 15 15 15c4 0 8-1 11-3v-7h-14v-14h32v30c-7 6-18 10-30 10-20 0-34-13-34-31z" fill="#000"/>
+  <path d="M102 452h17c10 0 16 5 16 13s-6 13-16 13h-7v14h-10zm16 18c4 0 7-2 7-5s-3-5-7-5h-6v10zm37-18h10l17 40h-11l-3-7h-16l-3 7h-11zm10 25-5-12-5 12zm37-16h-12v-9h34v9h-12v31h-10zm39-9h10v15h14v-15h10v40h-10v-16h-14v16h-10zm52 20c0-12 9-21 22-21s22 9 22 21-9 21-22 21-22-9-22-21zm33 0c0-6-5-11-11-11s-11 5-11 11 5 11 11 11 11-5 11-11zm30-20h19c6 0 11 2 14 5 3 3 4 6 4 11 0 6-3 11-8 14l10 10h-12l-8-9h-9v9h-10zm19 23c5 0 8-3 8-7s-3-7-8-7h-9v14zm40-23h10v40h-10z" fill="#000"/>
+</svg>

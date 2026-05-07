@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+  <title id="title">Playlist category image placeholder</title>
+  <desc id="desc">A simple organized playlist placeholder image.</desc>
+  <rect width="640" height="360" fill="#eef8f1"/>
+  <rect x="88" y="70" width="464" height="220" rx="8" fill="#fff" stroke="#cfe7d8" stroke-width="4"/>
+  <circle cx="150" cy="128" r="18" fill="#27ae60"/>
+  <circle cx="150" cy="180" r="18" fill="#27ae60"/>
+  <circle cx="150" cy="232" r="18" fill="#27ae60"/>
+  <path d="M198 128h260M198 180h210M198 232h242" stroke="#2c3e50" stroke-width="14" stroke-linecap="round"/>
+  <path d="M460 118v66c0 20-15 33-36 28-17-4-26-17-21-29 5-13 21-17 37-10v-76z" fill="#3498db"/>
+</svg>
